@@ -1,6 +1,7 @@
 package dev.w0ple.speed;
 
 import dev.w0ple.speed.config.SpeedConfig;
+import dev.w0ple.speed.sound.SongDecoder;
 import dev.w0ple.speed.sound.SpeedTrack;
 import dev.w0ple.speed.speed.EnergyWindows;
 import dev.w0ple.speed.speed.PeakFinder;
@@ -9,12 +10,10 @@ import dev.w0ple.speed.speed.SpeedMeter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.AudioStream;
-import net.minecraft.client.sounds.JOrbisAudioStream;
 import net.minecraft.world.entity.Entity;
 
 import javax.sound.sampled.AudioFormat;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +21,7 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 /**
- * The song gets louder the faster the player moves. The first .ogg in config/w0plespeed starts from
+ * The song gets louder the faster the player moves. The first .ogg or .mp3 in config/w0plespeed starts from
  * its peak (the drop) once the speed passes the minimum, its volume follows the speed, and it stops
  * (and goes back to the peak) after a few seconds below the minimum.
  */
@@ -130,8 +129,8 @@ public final class SpeedMusic {
     private static Path firstSong() {
         if (!Files.isDirectory(SpeedConfig.DIR)) return null;
         try (Stream<Path> files = Files.list(SpeedConfig.DIR)) {
-            return files.filter(f -> f.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".ogg"))
-                    .sorted().findFirst().orElse(null);
+            return files.filter(SongDecoder::isSong)
+                    .sorted(SongDecoder::compare).findFirst().orElse(null);
         } catch (IOException e) {
             return null;
         }
@@ -184,7 +183,7 @@ public final class SpeedMusic {
 
     /** Decodes the file and finds the start of its drop; 0 when it cannot be read. */
     private static double analyse(Path file) {
-        try (InputStream in = Files.newInputStream(file); AudioStream ogg = new JOrbisAudioStream(in)) {
+        try (AudioStream ogg = SongDecoder.open(file)) {
             AudioFormat f = ogg.getFormat();
             EnergyWindows windows = new EnergyWindows((int) f.getSampleRate(), f.getChannels(), WINDOW);
             byte[] buf = new byte[1 << 16];
@@ -205,7 +204,7 @@ public final class SpeedMusic {
 
     /** One line for the settings screen: what the mod found in the song folder. */
     public String statusText() {
-        if (song == null) return "Положи песню .ogg в config/w0plespeed";
+        if (song == null) return "Положи песню .mp3 или .ogg в config/w0plespeed";
         if (!cacheValid()) return "Ищу пик песни...";
         int s = (int) Math.round(cfg.peakSeconds >= 0 ? cfg.peakSeconds : cfg.peakValue);
         return String.format(Locale.ROOT, "Пик: %d:%02d%s", s / 60, s % 60, cfg.peakSeconds >= 0 ? " (вручную)" : "");

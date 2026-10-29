@@ -18,9 +18,11 @@ public class SpeedTest implements FabricClientGameTest {
 
     @Override
     public void runTest(ClientGameTestContext ctx) {
-        try (InputStream in = SpeedTest.class.getResourceAsStream("/test.ogg")) {
+        // W0PLE_TEST_SONG=mp3 plays test.mp3 instead of test.ogg
+        String song = "mp3".equals(System.getenv("W0PLE_TEST_SONG")) ? "test.mp3" : "test.ogg";
+        try (InputStream in = SpeedTest.class.getResourceAsStream("/" + song)) {
             Files.createDirectories(SpeedConfig.DIR);
-            Files.copy(in, SpeedConfig.DIR.resolve("test.ogg"), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(in, SpeedConfig.DIR.resolve(song), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

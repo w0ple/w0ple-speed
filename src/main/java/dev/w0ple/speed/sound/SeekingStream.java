@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * The vanilla engine cannot seek, so this wraps the decoded ogg stream and throws the PCM before
+ * The vanilla engine cannot seek, so this wraps the decoded (ogg or mp3) stream and throws the PCM before
  * the offset away on the first reads (done lazily, on the sound thread).
  */
 public final class SeekingStream implements AudioStream {

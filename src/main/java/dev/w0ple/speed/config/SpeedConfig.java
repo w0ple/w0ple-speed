@@ -15,7 +15,7 @@ import java.nio.file.StandardCopyOption;
 public final class SpeedConfig {
 
     public static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("w0plespeed.json");
-    /** The song folder: the first .ogg in it is played. */
+    /** The song folder: the first .ogg (else .mp3) in it is played. */
     public static final Path DIR = FabricLoader.getInstance().getConfigDir().resolve("w0plespeed");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static SpeedConfig instance = new SpeedConfig();

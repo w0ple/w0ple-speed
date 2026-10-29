@@ -28,7 +28,7 @@ public final class SpeedTrack extends AbstractSoundInstance implements TickableS
 
     public static final String NAMESPACE = "w0plespeed_file";
     public static final Identifier ID = Identifier.fromNamespaceAndPath(NAMESPACE, "speed_music_track");
-    public static final String VIRTUAL_FILE = "speed_music_track.ogg";
+    public static final String VIRTUAL_FILE = "speed_music_track.ogg"; // name only; the real format is picked by SongDecoder
     public static final float FADE_IN_SECONDS = 0.5f;
     public static final float FADE_OUT_SECONDS = 1f;
     private static final float TICK = 0.05f;

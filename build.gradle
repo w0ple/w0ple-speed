@@ -26,6 +26,9 @@ dependencies {
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
+    // mp3 decoder (LGPL-2.1), shipped as a separate nested jar
+    include(implementation('javazoom:jlayer:1.0.1'))
+
     // optional: settings screen (Mod Menu opens a Cloth Config screen); compile-time only
     compileOnly files('libs-compile/modmenu-20.0.3.jar', 'libs-compile/cloth-config-26.2.155.jar')
 
