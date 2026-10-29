@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "w0plespeed_test",
+  "version": "1.0.0",
+  "name": "W0ple Speed - test",
+  "description": "Opens a test world and checks the music and the afterimages. Not part of the release.",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": [ "dev.w0ple.speed.test.SpeedTest" ]
+  },
+  "depends": { "w0plespeed": "*" }
+}

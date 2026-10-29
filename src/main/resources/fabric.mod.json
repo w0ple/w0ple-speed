@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "w0plespeed",
+  "version": "${version}",
+  "name": "W0ple Speed",
+  "description": "Скоростная музыка (песня с пика, громкость растёт со скоростью) и Проекции (зеленоватые остаточные изображения на большой скорости). Песню кладёт пользователь в config/w0plespeed.",
+  "authors": [ "W0ple" ],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [ "dev.w0ple.speed.W0pleSpeed" ],
+    "modmenu": [ "dev.w0ple.speed.config.SpeedModMenu" ]
+  },
+  "mixins": [ "w0plespeed.mixins.json" ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.2",
+    "java": ">=25"
+  },
+  "suggests": {
+    "modmenu": "*",
+    "cloth-config": "*"
+  }
+}

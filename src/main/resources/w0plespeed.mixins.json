@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.w0ple.speed.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "AvatarRendererMixin",
+    "LivingEntityRendererMixin",
+    "MusicManagerMixin",
+    "SoundBufferLibraryStreamMixin",
+    "SoundEngineProviderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
