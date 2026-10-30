@@ -84,4 +84,21 @@ class Mp3AudioStreamTest {
     void garbageIsRejected() {
         assertThrows(IOException.class, () -> new Mp3AudioStream(new ByteArrayInputStream(new byte[4096])));
     }
+
+    @Test
+    void builtInSongOpensWhenNoFileGiven() throws IOException {
+        try (var s = SongDecoder.open(null)) {
+            assertEquals(2, s.getFormat().getChannels());
+            assertTrue(s.read(4096).hasRemaining());
+        }
+    }
+
+    @Test
+    void oggBeatsMp3AndNamesBreakTies() {
+        var a = java.nio.file.Path.of("b.ogg");
+        var b = java.nio.file.Path.of("a.mp3");
+        var c = java.nio.file.Path.of("a.ogg");
+        var sorted = java.util.stream.Stream.of(b, a, c).sorted(SongDecoder::compare).toList();
+        assertEquals(java.util.List.of(c, a, b), sorted);
+    }
 }

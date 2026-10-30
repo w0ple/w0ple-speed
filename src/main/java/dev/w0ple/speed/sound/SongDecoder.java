@@ -15,6 +15,17 @@ public final class SongDecoder {
     private SongDecoder() {
     }
 
+    public static AudioStream openDefault() throws IOException {
+        InputStream in = SongDecoder.class.getResourceAsStream(DEFAULT_RESOURCE);
+        if (in == null) throw new IOException("Built-in song is missing");
+        try {
+            return new Mp3AudioStream(new java.io.BufferedInputStream(in));
+        } catch (IOException | RuntimeException e) {
+            in.close();
+            throw e;
+        }
+    }
+
     public static boolean isSong(Path file) {
         String n = file.getFileName().toString().toLowerCase(Locale.ROOT);
         return n.endsWith(".ogg") || n.endsWith(".mp3");
@@ -30,7 +41,13 @@ public final class SongDecoder {
         return file.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".mp3");
     }
 
+    /** Second the built-in song's drop starts at (2:39). */
+    public static final double DEFAULT_PEAK = 159;
+    public static final String DEFAULT_RESOURCE = "/assets/w0plespeed/song/default.mp3";
+
+    /** Opens the file, or the built-in song when {@code file} is null. */
     public static AudioStream open(Path file) throws IOException {
+        if (file == null) return openDefault();
         InputStream in = Files.newInputStream(file);
         try {
             return isMp3(file) ? new Mp3AudioStream(in) : new JOrbisAudioStream(in);

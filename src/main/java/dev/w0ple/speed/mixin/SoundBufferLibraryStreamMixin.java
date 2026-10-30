@@ -25,7 +25,7 @@ public abstract class SoundBufferLibraryStreamMixin {
     private void w0ple$seek(Identifier id, boolean looping, CallbackInfoReturnable<CompletableFuture<AudioStream>> cir) {
         if (!SpeedTrack.ID.getNamespace().equals(id.getNamespace()) || !id.getPath().contains("speed_music_track")) return;
         Path song = SpeedTrack.file();
-        if (song == null) return;
+        // song == null: the built-in song
         double offset = SpeedTrack.takeOffset();
         // the decoder (ogg or mp3) is chosen by the file extension, not by the virtual name
         cir.setReturnValue(CompletableFuture.supplyAsync(() -> {

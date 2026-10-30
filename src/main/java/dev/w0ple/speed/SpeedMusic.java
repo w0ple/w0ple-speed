@@ -73,7 +73,7 @@ public final class SpeedMusic {
         double speed = speedOf(p);
         if (speed < 0) return;
         double max = Math.max(cfg.maxSpeed, cfg.minSpeed + 1);
-        boolean on = gate.update(speed, DT, cfg.minSpeed, max) && song != null;
+        boolean on = gate.update(speed, DT, cfg.minSpeed, max);
         if (on) {
             if (restartIn > 0) restartIn--;
             if (track == null && restartIn <= 0) startTrack(mc);
@@ -137,6 +137,7 @@ public final class SpeedMusic {
     }
 
     private boolean cacheValid() {
+        if (song == null) return true; // the built-in song has a fixed peak
         try {
             return song != null && cfg.peakValue >= 0 && cfg.peakFile.equals(song.getFileName().toString()) && cfg.peakSize == Files.size(song);
         } catch (IOException e) {
@@ -145,6 +146,7 @@ public final class SpeedMusic {
     }
 
     private double usablePeak() {
+        if (song == null) return SongDecoder.DEFAULT_PEAK;
         return cacheValid() ? cfg.peakValue : 0;
     }
 
@@ -204,9 +206,9 @@ public final class SpeedMusic {
 
     /** One line for the settings screen: what the mod found in the song folder. */
     public String statusText() {
-        if (song == null) return "Положи песню .mp3 или .ogg в config/w0plespeed";
+        if (song == null) return "Играет встроенная песня. Свою .mp3/.ogg можно положить в config/w0plespeed";
         if (!cacheValid()) return "Ищу пик песни...";
-        int s = (int) Math.round(cfg.peakSeconds >= 0 ? cfg.peakSeconds : cfg.peakValue);
+        int s = (int) Math.round(cfg.peakSeconds >= 0 ? cfg.peakSeconds : song == null ? SongDecoder.DEFAULT_PEAK : cfg.peakValue);
         return String.format(Locale.ROOT, "Пик: %d:%02d%s", s / 60, s % 60, cfg.peakSeconds >= 0 ? " (вручную)" : "");
     }
 

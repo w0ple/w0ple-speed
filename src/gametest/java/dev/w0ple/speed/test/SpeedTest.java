@@ -19,8 +19,16 @@ public class SpeedTest implements FabricClientGameTest {
     @Override
     public void runTest(ClientGameTestContext ctx) {
         // W0PLE_TEST_SONG=mp3 plays test.mp3 instead of test.ogg
+        // W0PLE_TEST_SONG=none copies nothing: the built-in song must play
         String song = "mp3".equals(System.getenv("W0PLE_TEST_SONG")) ? "test.mp3" : "test.ogg";
-        try (InputStream in = SpeedTest.class.getResourceAsStream("/" + song)) {
+        if ("none".equals(System.getenv("W0PLE_TEST_SONG"))) {
+            try {
+                Files.createDirectories(SpeedConfig.DIR);
+                try (var f = Files.list(SpeedConfig.DIR)) { f.forEach(p -> p.toFile().delete()); }
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        } else try (InputStream in = SpeedTest.class.getResourceAsStream("/" + song)) {
             Files.createDirectories(SpeedConfig.DIR);
             Files.copy(in, SpeedConfig.DIR.resolve(song), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
